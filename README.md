@@ -114,19 +114,11 @@ Depending on your security requirements and secrets management, this process is 
 
 ```nix
 {
-  services.crowdsec = {
-    ExecStartPre = let
-      script = pkgs.writeScriptBin "register-bouncer" ''
-        #!${pkgs.runtimeShell}
-        set -eu
-        set -o pipefail
-
-        if ! cscli bouncers list | grep -q "my-bouncer"; then
-          cscli bouncers add "my-bouncer" --key "<api-key>"
-        fi
-      '';
-    in ["${script}/bin/register-bouncer"];
-  };
+  services.crowdsec.extraExecStartPre = ''
+    if ! cscli bouncers list | grep -q "my-bouncer"; then
+      cscli bouncers add "my-bouncer" --key "<api-key>"
+    fi
+  '';
 }
 
 ```

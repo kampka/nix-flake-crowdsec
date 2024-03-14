@@ -127,6 +127,13 @@ in {
       type = format.type;
       default = {};
     };
+    extraExecStartPre = mkOption {
+      description = mkDoc ''
+        Script run pre starting the engine (e.g. to add bouncers or install collections)
+      '';
+      type = types.lines;
+      default = [];
+    };
   };
   config = let
     cscli = pkgs.writeScriptBin "cscli" ''
@@ -241,6 +248,7 @@ in {
                     fi
                   ''}
                 ''}
+                ${cfg.extraExecStartPre}
               '';
             in ["${script}/bin/crowdsec-setup"];
           };
