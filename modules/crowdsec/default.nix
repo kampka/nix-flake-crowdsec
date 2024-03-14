@@ -127,6 +127,13 @@ in {
       type = format.type;
       default = {};
     };
+    journaldSupport = mkOption {
+      description = mkDoc ''
+        Allow acquisitions from systemd-journald
+      '';
+      type = types.bool;
+      default = false;
+    };
   };
   config = let
     cscli = pkgs.writeScriptBin "cscli" ''
@@ -204,7 +211,7 @@ in {
             ProtectControlGroups = mkDefault true;
 
             ProtectProc = mkDefault "invisible";
-            ProcSubset = mkDefault "pid";
+            ProcSubset = mkIf (!cfg.journaldSupport) (mkDefault "pid");
 
             RestrictNamespaces = mkDefault true;
             RestrictRealtime = mkDefault true;
@@ -253,10 +260,12 @@ in {
         "f '${cfg.settings.api.server.online_client.credentials_path}' 0750 ${user} ${group} - -"
         "f '${cfg.settings.config_paths.index_path}' 0750 ${user} ${group} - -"
       ];
-      users.users.${user} = lib.mapAttrs (name: lib.mkDefault) {
-        description = "Cowdsec service user";
-        isSystemUser = true;
-        inherit group;
+      users.users.${user} = {
+        name = lib.mkDefault user;
+        description = lib.mkDefault "Cowdsec service user";
+        isSystemUser = lib.mkDefault true;
+        group = lib.mkDefault group;
+        extraGroups = lib.mkIf cfg.journaldSupport [ "systemd-journal" ];
       };
 
       users.groups.${group} = lib.mapAttrs (name: lib.mkDefault) {};
