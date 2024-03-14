@@ -114,7 +114,7 @@ Depending on your security requirements and secrets management, this process is 
 
 ```nix
 {
-  services.crowdsec = {
+  systemd.services.crowdsec.serviceConfig = {
     ExecStartPre = let
       script = pkgs.writeScriptBin "register-bouncer" ''
         #!${pkgs.runtimeShell}
