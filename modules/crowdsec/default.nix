@@ -263,7 +263,7 @@ in {
       ];
       users.users.${user} = {
         name = lib.mkDefault user;
-        description = lib.mkDefault "Cowdsec service user";
+        description = lib.mkDefault "Crowdsec service user";
         isSystemUser = lib.mkDefault true;
         group = lib.mkDefault group;
         extraGroups = lib.mkIf cfg.allowLocalJournalAccess ["systemd-journal"];
