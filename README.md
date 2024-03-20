@@ -130,3 +130,39 @@ Depending on your security requirements and secrets management, this process is 
 }
 
 ```
+
+## Examples
+
+### Local SSHd with systemd-journal
+
+This scenario is probably the most common scenario when getting started with Crowdsec.
+It configures the engine to parse logs from the systems local systemd-journal for
+failed SSH authentications and blocks IPs trying to brute-force the SSH key.
+
+```nix
+{
+  services.crowdsec = let
+    yaml = (pkgs.formats.yaml {}).generate;
+    acquisitions_file = yaml "acquisitions.yaml" {
+      source = "journalctl";
+      journalctl_filter = ["_SYSTEMD_UNIT=sshd.service"];
+      labels.type = "syslog";
+    };
+  in {
+    enable = true;
+    allowLocalJournalAccess = true;
+    settings = {
+      crowdsec_service.acquisition_path = acquisitions_file;
+    };
+  };
+}
+```
+
+Then, install a scenario to act on your logs. The [crowdsecurity/linux](https://app.crowdsec.net/hub/author/crowdsecurity/collections/linux)
+collection provides a good base collection to get started.
+
+```shell
+  cscli collections install crowdsecurity/linux
+```
+
+This can be automated using eg. `ExecStartPre` scripts. See some example in this README for inspiration.
