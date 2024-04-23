@@ -21,7 +21,7 @@
           pkgs.fetchpatch
           {
             url = "https://patch-diff.githubusercontent.com/raw/crowdsecurity/crowdsec/pull/2868.patch";
-            hash = "sha256-RSfLhNZ3JVvHoW/BNca9Hs4lpjcDtE1vsBDjJeaHqvc=";
+            hash = "sha256-KLoGgHGwkS3+e0vSrivL0HQVRCCZ+saH9NDWlH7/Zmw=";
           }
         )
       ];
