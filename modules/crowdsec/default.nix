@@ -81,8 +81,14 @@
         online_client.credentials_path = mkDefault "${stateDir}/online_api_credentials.yaml";
       };
     };
-  };
 
+    prometheus = {
+      enabled = mkDefault true;
+      level = mkDefault "full";
+      listen_addr = mkDefault "127.0.0.1";
+      listen_port = mkDefault 6060;
+    };
+  };
   user = "crowdsec";
   group = "crowdsec";
   stateDir = "/var/lib/crowdsec";
