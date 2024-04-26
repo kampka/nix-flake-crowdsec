@@ -8,6 +8,7 @@
   format = pkgs.formats.yaml {};
   configFile = format.generate "crowdsec.yaml" cfg.settings;
 
+  #pkg = cfg.package;
   pkg = cfg.package.overrideAttrs (old: {
     ldflags =
       (old.ldflags or [])
@@ -81,8 +82,13 @@
         online_client.credentials_path = mkDefault "${stateDir}/online_api_credentials.yaml";
       };
     };
+    prometheus = {
+      enabled = true;
+      level = "full";
+      listen_addr = "0.0.0.0";
+      listen_port = 6060;
+    };
   };
-
   user = "crowdsec";
   group = "crowdsec";
   stateDir = "/var/lib/crowdsec";
