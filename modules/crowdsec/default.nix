@@ -139,6 +139,14 @@ in {
     '';
   in
     lib.mkIf (cfg.enable) {
+      warnings = [
+        ''
+          nix-flake-crowdsec has moved to Codeberg.
+          You can find the latest version at https://codeberg.org/kampka/nix-flake-crowdsec
+          Please make sure to update your dependency to receive the latests updates.
+        ''
+      ];
+
       services.crowdsec.settings = defaultSettings;
       services.crowdsec.patterns = defaultPatterns;
 
