@@ -8,24 +8,7 @@
   format = pkgs.formats.yaml {};
   configFile = format.generate "crowdsec.yaml" cfg.settings;
 
-  pkg = cfg.package.overrideAttrs (old: {
-    ldflags =
-      (old.ldflags or [])
-      ++ [
-        "-X github.com/crowdsecurity/go-cs-lib/version.Version=v${old.version}"
-      ];
-    patches =
-      (old.patches or [])
-      ++ [
-        (
-          pkgs.fetchpatch
-          {
-            url = "https://patch-diff.githubusercontent.com/raw/crowdsecurity/crowdsec/pull/2868.patch";
-            hash = "sha256-RSfLhNZ3JVvHoW/BNca9Hs4lpjcDtE1vsBDjJeaHqvc=";
-          }
-        )
-      ];
-  });
+  pkg = cfg.package;
 
   defaultPatterns = lib.mapAttrs (name: value: lib.mkDefault "${pkg}/share/crowdsec/config/patterns/${name}") (builtins.readDir "${pkg}/share/crowdsec/config/patterns");
 
@@ -91,7 +74,11 @@
 in {
   options.services.crowdsec = with lib; {
     enable = mkEnableOption "CrowSec Security Engine";
-    package = mkPackageOption pkgs "crowdsec" {};
+    package = mkOption {
+      description = "The crowdsec package to use in this module";
+      type = types.package;
+      default = pkgs.callPackage ../../packages/crowdsec {};
+    };
     name = mkOption {
       type = types.str;
       description = mdDoc ''
